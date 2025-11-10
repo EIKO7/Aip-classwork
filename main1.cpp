@@ -6,8 +6,7 @@ struct IntArray
   k(1),
   a(new int[1])
  {
-  
-
+  *a = i;
  }
 
  ~IntArray()
@@ -60,3 +59,13 @@ int main()
  }
 }
 
+
+int IntArray::get(size_t id) const
+{
+ if (id >= k)
+ {
+  throw std::logic_error("ERROR: bad id");
+ }
+
+ return a[id];
+}
