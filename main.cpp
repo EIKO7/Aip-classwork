@@ -1,138 +1,35 @@
 #include <iostream>
-
-struct IntArray
-{
- IntArray(int i) :
-  k(1),
-  a(new int[1])
- {
-  *a = i;
- }
-
- ~IntArray()
- {
-  delete[] a;
- }
-
- IntArray(const IntArray& rhs);
- IntArray& operator = (const IntArray& rhs);
-
- IntArray(IntArray&& rhs):
-  a(rhs.a),
-  k(rhs.getsize())
- {
-  rhs.a = nullptr;
- }
-
- IntArray& operator = (IntArray&& rhs)
- {
-  delete[] a;
-  a = rhs.a;
-  k = rhs.getsize();
-
-  rhs.a = nullptr;
-  return *this;
- }
-
- int add(int i);
- int get(size_t id) const noexcept;
- /*int at(size_t id) const;*/
- size_t getsize() const noexcept;
- int last() const noexcept;
-
- int* a;
- size_t k;
-};
+#include "IntMatrix.h"
 
 int main()
 {
- try
- {
-  int next = 0;
-  std::cin >> next;
+    size_t r, c;
+    std::cin >> r >> c;
 
-  IntArray a(next);
+    IntMatrix mat(r, c);
 
-  while (std::cin >> next)
-  {
-   a.add(next);
-  }
+    for (size_t i = 0; i < r; ++i)
+        for (size_t j = 0; j < c; ++j)
+            std::cin >> mat.data[i][j];
 
-  if (!std::cin && !std::cin.eof())
-  {
-   return 1;
-  }
+    mat.print();
+    std::cout << "\n";
 
-  size_t count = 1;
+    int cmd, p, v;
+    while (std::cin >> cmd >> p >> v)
+    {
+        if (cmd == 1)
+        {
+            mat.addRow(p, v);
+        }
+        else if (cmd == 2)
+        {
+            mat.addCol(p, v);
+        }
 
-  for (size_t i = 0; i < a.getsize() - 1; ++i)
-  {
-   int d = a.get(i);
+        mat.print();
+        std::cout << "\n";
+    }
 
-   count += !(d % a.last()) ? 1 : 0;
-  }
-
-  std::cout << count << "\n";
- }
- catch (...)
- {
-  return 1;
- }
-}
-
-IntArray::IntArray(const IntArray& rhs) :
- a(new int[rhs.getsize()]),
- k(getsize())
-{
- for (size_t i = 0; i < rhs.getsize(); ++i)
-  a[i] = rhs.get(i);
-}
-
-int IntArray::get(size_t id) const
-{
- return a[id];
-}
-
-//int IntArray::at(size_t id) const
-//{
-//
-//}
-
-size_t IntArray::getsize() const noexcept
-{
- return k;
-}
-
-int IntArray::last() const noexcept
-{
- return get(getsize() - 1);
-}
-
-int IntArray::add(int i)
-{
- int* dint = new int[getsize() + 1];
-
- for (size_t i = 0; i < getsize(); ++i)
- {
-  dint[i] = get(i);
- }
-
- delete[] a;
- a = dint;
- ++k;
-}
-
-IntArray& IntArray:: operator = (const IntArray & rhs)
-{
- k = rhs.getsize();
- int* p = new int[rhs.getsize()];
-
- for (size_t i = 0; i < rhs.getsize(); ++i)
-  p[i] = rhs.get(i);
-
- delete[] a;
- a = p;
- k = rhs.getsize();
-
- return *this;
+    return 0;
 }
